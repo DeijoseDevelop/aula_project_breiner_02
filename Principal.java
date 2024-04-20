@@ -8,7 +8,6 @@ public class Principal {
     static Estudiante[] estudiantes = new Estudiante[elementos];
     static Estudiante estudiante = new Estudiante();
     static Residuo[] residuos = new Residuo[elementos];
-    static Residuo residuo;
     static Reciclaje[] reciclajes = new Reciclaje[elementos];
     static Reciclaje reciclaje;
     static final String fecha = "21/11/2023";
@@ -30,19 +29,21 @@ public class Principal {
         estudiante.nroDocumento = "4567";
         estudiantes[1] = estudiante;
 
-        residuo = new Residuo();
-        residuo.codigo = "A101";
-        residuo.material = "Plastico";
-        residuo.objeto = "Botella";
-        residuo.puntos = 4;
-        residuos[0] = residuo;
+        Residuo residuo1 = new Residuo(
+            "A101",
+            "Plastico",
+            "Botella",
+            4
+        );
+        residuos[0] = residuo1;
 
-        residuo = new Residuo();
-        residuo.codigo = "A102";
-        residuo.material = "Carton";
-        residuo.objeto = "Caja";
-        residuo.puntos = 3;
-        residuos[1] = residuo;
+        Residuo residuo2 = new Residuo(
+            "A102",
+            "Carton",
+            "Caja",
+            3
+        );
+        residuos[1] = residuo2;
 
         reciclaje = new Reciclaje();
         reciclaje.nrodocumento = "4567";
@@ -216,15 +217,23 @@ public class Principal {
                         codigo = entrada.next();
                         pos = consultarResiduo(codigo);
                         if (pos == -1) {
-                            residuo = new Residuo();
-                            residuo.codigo = codigo;
                             System.out.println("Digite el material del residuo");
-                            residuo.material = entrada.next();
+                            String material = entrada.next();
+
                             System.out.println("Digite el objeto");
-                            residuo.objeto = entrada.next();
+                            String objeto = entrada.next();
+
                             System.out.println("Digite la cantidad de puntos");
-                            residuo.puntos = entrada.nextInt();
+                            int puntos = entrada.nextInt();
+
+                            Residuo residuo = new Residuo(
+                                codigo,
+                                material,
+                                objeto,
+                                puntos
+                            );
                             residuos[nr] = residuo;
+
                             nr++;
                             System.out.println("Registro con exito");
 
@@ -257,18 +266,20 @@ public class Principal {
                         System.out.println("2.Objeto");
                         System.out.println("3.Puntos");
                         opCrub = entrada.nextInt();
+
+                        Residuo residuoActual = residuos[pos];
                         switch (opCrub) {
                             case 1:
                                 System.out.println("Digite el nuevo material");
-                                residuos[pos].material = entrada.next();
+                                residuoActual.setMaterial(entrada.next());
                                 break;
                             case 2:
                                 System.out.println("Digite el nuevo objeto");
-                                residuos[pos].objeto = entrada.next();
+                                residuoActual.setObjeto(entrada.next());
                                 break;
                             case 3:
                                 System.out.println("Digite la nueva cantidad de puntos");
-                                residuos[pos].puntos = entrada.nextInt();
+                                residuoActual.setPuntos(entrada.nextInt());
 
                         }
                         System.out.println("Los datos fueron actualizados correctamente");
@@ -307,15 +318,16 @@ public class Principal {
         System.out.println("     Codigo     Material    Objeto     Puntos");
         System.out.println("-----------------------------------------------");
         for (int i = 0; i < nr; i++) {
-            System.out.println(residuos[i].codigo + "\t\t" + residuos[i].material + "\t\t" + residuos[i].objeto + "\t\t"
-                    + residuos[i].puntos);
+            Residuo residuoActual = residuos[i];
+            System.out.println(residuoActual.getCodigo() + "\t\t" + residuoActual.getMaterial() + "\t\t" + residuoActual.getObjeto() + "\t\t"
+                    + residuoActual.getPuntos());
         }
     }
 
     public static int consultarResiduo(String codigoAsignatura) {
         int posicion = -1;
         for (int i = 0; i < nr; i++) {
-            if (residuos[i].codigo.equals(codigoAsignatura)) {
+            if (residuos[i].getCodigo().equals(codigoAsignatura)) {
                 posicion = i;
             }
         }
@@ -324,13 +336,14 @@ public class Principal {
 
     public static void mostrarResiduos(String codigoAsignatura) {
         for (int i = 0; i < nr; i++) {
-            if (residuos[i].codigo.equals(codigoAsignatura)) {
+            Residuo residuoActual = residuos[i];
+            if (residuoActual.getCodigo().equals(codigoAsignatura)) {
                 System.out.println("-------------------------------------");
                 System.out.println("               Residuos              ");
                 System.out.println("--------------------------------------");
                 System.out.println("Codigo      Material       Objeto      Puntos");
-                System.out.println(residuos[i].codigo + "\t" + residuos[i].material + "\t " + residuos[i].objeto
-                        + "\t\t" + residuos[i].puntos);
+                System.out.println(residuoActual.getCodigo() + "\t" + residuoActual.getMaterial() + "\t " + residuoActual.getObjeto()
+                        + "\t\t" + residuoActual.getPuntos());
 
             }
         }
@@ -396,7 +409,7 @@ public class Principal {
                                 if (pos > -1) {
                                     System.out.println("Digita la cantidad");
                                     canti = entrada.nextInt();
-                                    contador = (residuos[pos].puntos * canti);
+                                    contador = (residuos[pos].getPuntos() * canti);
                                     reciclaje.puntosreciclaje = (reciclaje.puntosreciclaje + contador);
                                     reciclaje.detalle_reciclaje[nda] = codigo;
                                     nda = nda + 1;
