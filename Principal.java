@@ -15,18 +15,20 @@ public class Principal {
     static String documento, codigo;
 
     public static void main(String[] args) {
-        estudiante = new Estudiante();
-        estudiante.nombres = "Isabel";
-        estudiante.apellido = "Loaiza";
-        estudiante.programaAcademico = "Contadutia";
-        estudiante.nroDocumento = "1234";
+        estudiante = new Estudiante(
+            "1234",
+            "Loaiza",
+            "Isabel",
+            "Contadutia"
+        );
         estudiantes[0] = estudiante;
 
-        estudiante = new Estudiante();
-        estudiante.nombres = "Sara";
-        estudiante.apellido = "Salazar";
-        estudiante.programaAcademico = "Medicina";
-        estudiante.nroDocumento = "4567";
+        estudiante = new Estudiante(
+            "4567",
+            "Salazar",
+            "Sara",
+            "Medicina"
+        );
         estudiantes[1] = estudiante;
 
         Residuo residuo1 = new Residuo(
@@ -45,19 +47,22 @@ public class Principal {
         );
         residuos[1] = residuo2;
 
-        reciclaje = new Reciclaje();
-        reciclaje.nrodocumento = "4567";
-        reciclaje.fecha = fecha;
-        reciclaje.detalle_reciclaje[0] = "A101";
-        reciclaje.detalle_reciclaje[1] = "A102";
-        reciclaje.puntosreciclaje = 7;
-        reciclaje.nda = 2;
+        reciclaje = new Reciclaje(
+            fecha,
+            "4567",
+            5,
+            7,
+            2
+        );
+        reciclaje.agregarDetalleReciclaje("A101", 0);
+        reciclaje.agregarDetalleReciclaje("A102", 1);
         reciclajes[0] = reciclaje;
 
-        premio = new Premio();
-        premio.id = "P101";
-        premio.nombres = "Combo";
-        premio.valor_puntos = 50;
+        premio = new Premio(
+            "Combo",
+            50,
+            "P101"
+        );
         premios[0] = premio;
 
         do {
@@ -81,7 +86,7 @@ public class Principal {
                         pausa();
                         break;
                     case 4:
-                        Reciclaje();
+                        reciclar();
                         pausa();
 
                 }
@@ -112,14 +117,18 @@ public class Principal {
                             documento = entrada.next();
                             pos = consultarEstudiante(documento);
                             if (pos == -1) {
-                                estudiante = new Estudiante();
-                                estudiante.nroDocumento = documento;
                                 System.out.println("Digite el apellido ");
-                                estudiante.apellido = entrada.next();
+                                String apellidoT = entrada.next();
                                 System.out.println("Digite el nombre ");
-                                estudiante.nombres = entrada.next();
+                                String nombreT = entrada.next();
                                 System.out.println("Digite el programa academico ");
-                                estudiante.programaAcademico = entrada.next();
+                                String programaT = entrada.next();
+                                estudiante = new Estudiante(
+                                    documento,
+                                    apellidoT,
+                                    nombreT,
+                                    programaT
+                                );
                                 estudiantes[ne] = estudiante;
                                 System.out.println("Registro con exito");
                                 ne++;
@@ -153,18 +162,19 @@ public class Principal {
                             System.out.println("2.Nombre");
                             System.out.println("3.Carrera");
                             opCrub = entrada.nextInt();
+                            Estudiante student = estudiantes[pos];
                             switch (opCrub) {
                                 case 1:
                                     System.out.println("Digite el nuevo apellido");
-                                    estudiantes[pos].apellido = entrada.next();
+                                    student.setApellido(entrada.next());
                                     break;
                                 case 2:
                                     System.out.println("Digite el nuevo nombre");
-                                    estudiantes[pos].nombres = entrada.next();
+                                    student.setNombres(entrada.next());
                                     break;
                                 case 3:
                                     System.out.println("Digite la nuevo programa acdemico");
-                                    estudiantes[pos].programaAcademico = entrada.next();
+                                    student.setProgramaAcademico(entrada.next());
                                     break;
                             }
                             System.out.println("Los datos fueron actualizados correctamente");
@@ -353,17 +363,17 @@ public class Principal {
         System.out.println("------------------------------------");
         System.out.println("     Informacion del estudiante     ");
         System.out.println("------------------------------------");
-        System.out.println("Numero de documento : " + estudiantes[posicion_estu].nroDocumento);
-        System.out.println("Apellido            : " + estudiantes[posicion_estu].apellido);
-        System.out.println("Nombre              : " + estudiantes[posicion_estu].nombres);
-        System.out.println("Programa            : " + estudiantes[posicion_estu].programaAcademico);
+        System.out.println("Numero de documento : " + estudiantes[posicion_estu].getNroDocumento());
+        System.out.println("Apellido            : " + estudiantes[posicion_estu].getApellido());
+        System.out.println("Nombre              : " + estudiantes[posicion_estu].getNombres());
+        System.out.println("Programa            : " + estudiantes[posicion_estu].getProgramaAcademico());
 
     }
 
     public static int consultarEstudiante(String cedula) {
         int posicion = -1;
         for (int i = 0; i < ne; i++) {
-            if (estudiantes[i].nroDocumento.equals(cedula)) {
+            if (estudiantes[i].getNroDocumento().equals(cedula)) {
                 posicion = i;
 
             }
@@ -378,12 +388,12 @@ public class Principal {
         System.out.println("  Documento    Apellidos    Nombres    Programa");
         System.out.println("-----------------------------------------------");
         for (int i = 0; i < ne; i++) {
-            System.out.println("    " + estudiantes[i].nroDocumento + "      " + estudiantes[i].apellido + "      "
-                    + estudiantes[i].nombres + "       " + estudiantes[i].programaAcademico);
+            System.out.println("    " + estudiantes[i].getNroDocumento() + "      " + estudiantes[i].getApellido() + "      "
+                    + estudiantes[i].getNombres() + "       " + estudiantes[i].getProgramaAcademico());
         }
     }
 
-    public static void Reciclaje() {
+    public static void reciclar() {
         do {
             limpiarPantalla();
             System.out.println();
@@ -398,9 +408,11 @@ public class Principal {
                         pos = consultarEstudiante(documento);
                         if (pos > -1) {
                             mostarEstudiantes(pos);
-                            reciclaje = new Reciclaje();
-                            reciclaje.fecha = fecha;
-                            reciclaje.nrodocumento = documento;
+                            reciclaje = new Reciclaje(
+                                fecha,
+                                documento,
+                                5
+                            );
                             do {
                                 listar_Residuo();
                                 System.out.println("Digite el codigo del residuos que estas reciclando");
@@ -410,14 +422,14 @@ public class Principal {
                                     System.out.println("Digita la cantidad");
                                     canti = entrada.nextInt();
                                     contador = (residuos[pos].getPuntos() * canti);
-                                    reciclaje.puntosreciclaje = (reciclaje.puntosreciclaje + contador);
-                                    reciclaje.detalle_reciclaje[nda] = codigo;
+                                    reciclaje.setPuntosReciclaje(reciclaje.getPuntosReciclaje() + contador);
+                                    reciclaje.agregarDetalleReciclaje(codigo, nda);
                                     nda = nda + 1;
                                 }
                                 System.out.println("¿Algun otro objeto por reciclar? si(1) no(2)");
                                 opRerecicla = entrada.nextInt();
                             } while (opRerecicla == 1);
-                            reciclaje.nda = nda;
+                            reciclaje.setNda(nda);
                             reciclajes[nrc] = reciclaje;
                             nrc = nrc + 1;
                             System.out.println("Guardado con exito");
@@ -445,12 +457,12 @@ public class Principal {
             System.out.println("Fecha            Documento         Puntos optenidos   ");
             System.out.println("--------------------------------------------------");
             System.out.println(
-                    reciclajes[i].fecha + "\t\t" + reciclajes[i].nrodocumento + "\t\t" + reciclajes[i].puntosreciclaje);
+                    reciclajes[i].getFecha() + "\t\t" + reciclajes[i].getNroDocumento() + "\t\t" + reciclajes[i].getPuntosReciclaje());
             System.out.println();
             System.out.println("----Residuos reciclados-----");
             System.out.println();
-            for (int j = 0; j < reciclajes[i].nda; j++) {
-                mostrarResiduos(reciclajes[i].detalle_reciclaje[j]);
+            for (int j = 0; j < reciclajes[i].getNda(); j++) {
+                mostrarResiduos(reciclajes[i].getDetalleReciclaje()[j]);
             }
             System.out.println();
         }
@@ -471,11 +483,11 @@ public class Principal {
                         pos = consultarPremio(codigo);
                         if (pos == -1) {
                             premio = new Premio();
-                            premio.id = codigo;
+                            premio.setId(codigo);
                             System.out.println("Digite el nombre del premio");
-                            premio.nombres = entrada.next();
+                            premio.setNombres(entrada.next());
                             System.out.println("Digite la cantidad de puntos que se necesitan");
-                            premio.valor_puntos = entrada.nextInt();
+                            premio.setValorPuntos(entrada.nextInt());
                             premios[np] = premio;
                             np++;
                             System.out.println("Registro con exito");
@@ -511,11 +523,11 @@ public class Principal {
                         switch (opCrub) {
                             case 1:
                                 System.out.println("Digite el nuevo nombre");
-                                premios[pos].nombres = entrada.next();
+                                premios[pos].setNombres(entrada.next());
                                 break;
                             case 2:
                                 System.out.println("Digite el nuevo valor de puntos");
-                                premios[pos].valor_puntos = entrada.nextInt();
+                                premios[pos].setValorPuntos(entrada.nextInt());
                                 break;
                         }
                         System.out.println("Los datos fueron actualizados correctamente");
@@ -554,14 +566,14 @@ public class Principal {
         System.out.println("Id           Nombre         Valor en puntos   ");
         System.out.println("-----------------------------------------------");
         for (int i = 0; i < np; i++) {
-            System.out.println(premios[i].id + "\t\t" + premios[i].nombres + "\t\t" + premios[i].valor_puntos);
+            System.out.println(premios[i].getId() + "\t\t" + premios[i].getNombres() + "\t\t" + premios[i].getValorPuntos());
         }
     }
 
     public static int consultarPremio(String codigoPremio) {
         int posicion = -1;
         for (int i = 0; i < np; i++) {
-            if (premios[i].id.equals(codigoPremio)) {
+            if (premios[i].getId().equals(codigoPremio)) {
                 posicion = i;
             }
         }
@@ -570,12 +582,12 @@ public class Principal {
 
     public static void mostrarPremio(String codigoPremio) {
         for (int i = 0; i < np; i++) {
-            if (premios[i].id.equals(codigoPremio)) {
+            if (premios[i].getId().equals(codigoPremio)) {
                 System.out.println("-------------------------------------");
                 System.out.println("               Residuos              ");
                 System.out.println("--------------------------------------");
                 System.out.println("Id         Nombre       Valor en Puntos");
-                System.out.println(premios[i].id + "\t\t" + premios[i].nombres + "\t\t " + premios[i].valor_puntos);
+                System.out.println(premios[i].getId() + "\t\t" + premios[i].getNombres() + "\t\t " + premios[i].getValorPuntos());
 
             }
         }
